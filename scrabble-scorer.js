@@ -2,6 +2,8 @@
 
 const input = require("readline-sync");
 
+let word = input.question("Let's play some scrabble! Enter a word: ");
+
 const oldPointStructure = {
   1: ['A', 'E', 'I', 'O', 'U', 'L', 'N', 'R', 'S', 'T'],
   2: ['D', 'G'],
@@ -33,26 +35,111 @@ function oldScrabbleScorer(word) {
 // don't change the names or your program won't work as expected. //
 
 function initialPrompt() {
-   console.log("Let's play some scrabble! Enter a word:");
+ 
+   let points = oldScrabbleScorer(word);
+  console.log(points);
+};
+// CONFUSED WHY the Fucntion below is failing? !?!?!?!?!? HELLO? 
+function simpleScorer (word){
+   word = word.toLowerCase();
+   let score = 0;
+   for (let i = 0; i < word.length; i++){
+      score =+ 1;
+   }
+   return score;
+}
+
+console.log(simpleScorer(word));
+
+function vowelBonusScorer(word){
+   word = word.toLowerCase();
+   let score = 0;
+   const vowels = ['a', 'e', 'i', 'o', 'u'];
+   for (let i = 0; i < word.length; i++){
+      //if the word has a vowel score should be +3
+      if(vowels.includes(word[i])) {
+         score +=3;
+      }  else {
+         score +=1;
+      }
+   }
+   return score;
+};
+console.log(vowelBonusScorer(word));
+
+function scrabbleScorer (word){
+   let score = 0;
+   for (let i = 0; i < word.length; i++){
+        let letter = word[i].toLowerCase();
+        let pointValue = newPointStructure[letter];
+        score += pointValue;
+      
+   }
+   return score;
+}
+//DOES THIS NOT HAVE 3 OBJECTS !?!?!?!?!?
+const scoringAlgorithms = [
+   {
+      
+      description: 'Each letter is worth 1 point.',
+      name: 'Simple Score',
+      scoringFunction: simpleScorer
+   },
+   {
+      description: 'Each vowel is worth 3 points, and each consonant is worth 1 point',
+      name: 'Vowel Bonus Score',
+      scoringFunction: vowelBonusScorer
+   
+   },
+   {
+     
+      description: 'The traditional scoring algorithm',
+       name: 'Scrabble',
+      scoringFunction: scrabbleScorer
+   }
+];
+
+function scorerPrompt() {
+    console.log("Enter 0 for Simple Score");
+    console.log("Enter 1 for Vowel Bonus Score");
+    console.log("Enter 2 for Scrabble Score");
+    let userInput = input.question("Pick a scoring for your game: ");
+
+    let choice = parseInt(userInput);
+    if (choice === 0){
+      score = simpleScorer(word);
+   }  else if (choice === 1 ){
+      score = vowelBonusScorer(word);
+   } else if (choice === 2) {
+      score = oldScrabbleScorer
+   } else {
+      console.log("Invalid choice.");
+      return;
+   } 
+   console.log('The score for your word: ', score);
+}
+
+function transform(oldPointStructure) {
+   let transformObject = {};
+//this failed because i kept auto filling in .toLocaleLowerCase instead of toLowerCase! nvm still fails...
+   for (let letter in oldPointStructure){
+      let lowerCaseLetter = letter.toLowerCase();
+      transformObject[lowerCaseLetter] = oldPointStructure[letter];
+   }
+   return transformObject;
 };
 
-let simpleScorer;
-
-let vowelBonusScorer;
-
-let scrabbleScorer;
-
-const scoringAlgorithms = [];
-
-function scorerPrompt() {}
-
-function transform() {};
-
-let newPointStructure;
+let newPointStructure = transform(oldPointStructure) ;
+for (let i = 0; i < 26; i++) {
+   let letter = String.fromCharCode(97 + i); // using ASCII code starting at 97 
+   let pointValue = [1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10][i];
+   newPointStructure[letter] = pointValue;
+}
+//console.log(newPointStructure);
 
 function runProgram() {
-   initialPrompt();
-   
+  // initialPrompt();
+   scorerPrompt();
 }
 
 // Don't write any code below this line //
